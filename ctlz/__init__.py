@@ -1,11 +1,14 @@
 import os
 import json
+import ctlz.colors
+import ctlz.exceptions
 
 class Config:
     def __init__(self, paths, fmt, default=None):
         self.paths = paths
         self.fmt = fmt
         self.default = default
+        self.data = default
 
     def read(self):
         # check paths
@@ -17,16 +20,23 @@ class Config:
             if self.default != None:
                 return self.default
             else:
-                raise AssertionError("ctlz: no valid config files found, and no default config was provided")
+                raise exceptions.NoConfigFileFound("No file found or default provided")
 
         # read file
         if self.fmt == "json":
             if self.default != None:
                 try:
                     with open(good_paths[0]) as f:
-                        return json.load(f.read())
+                        self.data = json.load(f.read())
+                        return self.data
                 except:
                     return self.default
             else:
                 with open(good_paths[0]) as f:
-                    return json.load(f.read())
+                    self.data = json.load(f.read())
+                    return self.data
+
+        #TODO: add more config formats
+
+class Modes:
+    pass
