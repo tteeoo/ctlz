@@ -1,5 +1,4 @@
-## @package exceptions
-#  Contains basic classes to be used for exceptions
+## Contains basic classes to be used for exceptions
 #
 #  Exists just to provide nice, more specific exception names
 

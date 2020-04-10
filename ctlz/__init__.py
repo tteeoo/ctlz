@@ -1,5 +1,4 @@
-## @package init
-#  init module that contains everything
+## init module that contains everything
 #
 #  Contains all classes and submodules
 

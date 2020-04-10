@@ -1,5 +1,4 @@
-## @package text
-#  Contains functions and classes for easy formatting of printed text
+## Contains functions and classes for easy formatting of printed text
 #
 #  Currently only provides a function to color text
 
