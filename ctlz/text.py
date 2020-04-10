@@ -1,7 +1,3 @@
-## Contains functions and classes for easy formatting of printed text
-#
-#  Currently only provides a function to color text
-
 from ctlz import exceptions
 
 def __get_code(color, mode="fg"):
@@ -43,14 +39,10 @@ def __get_code(color, mode="fg"):
     if mode == "bg": code += 10
     return str(code)
 
-## Function to easily color printed text
-#
-#  fg and bg kwargs can be set to any standard 4 bit terminal color, prefix with 'bright_' (as in 'bright_red') for the bright variant
-#  @param text The text to be modified
-#  @param fg The foreground color of the text
-#  @param bg The background color of the text
 def color(text, fg=None, bg=None):
+    """Function to easily color printed text
 
+    fg and bg kwargs can be set to any standard 4 bit terminal color, prefix with 'bright_' (as in 'bright_red') for the bright variant"""
     if fg == None and bg == None:
         return text
     elif fg == None:
