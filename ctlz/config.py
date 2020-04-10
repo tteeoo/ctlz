@@ -9,6 +9,7 @@ from .exceptions import NoConfigFileFound
 #
 #  Currently only deserializes from a list of paths
 class Config:
+    """class for easy managment of config files"""
 
     ## @var self.paths
     #  List of paths to config file locations
