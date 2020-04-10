@@ -1,6 +1,6 @@
 import os
 import json
-import ctlz.colors
+import ctlz.text
 import ctlz.exceptions
 
 ## Class for easy managment of configuration files
@@ -15,7 +15,6 @@ class Config:
     #
     # Currently only supports json configuration files
     def read(self):
-        # check paths
         good_paths = []
         for path in self.paths:
             if os.path.isfile(path):
@@ -26,7 +25,6 @@ class Config:
             else:
                 raise exceptions.NoConfigFileFound("No file found or default provided")
 
-        # read file
         if self.fmt == "json":
             if self.default != None:
                 try:
