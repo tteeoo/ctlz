@@ -105,10 +105,12 @@ class Config:
 class Control:
     """Class for managing and executing decorated functions"""
 
-    def __init__(self, name, prompt=None, command=sys.argv[1:]):
+    def __init__(self, name, global_flags=[], prompt=None, command=sys.argv[1:]):
         """The constructor method"""
 
         self.commands = {}
+        self.global_flags = global_flags
+        self.flags = []
         self.name = name
         self.auto_console = True
 
@@ -120,12 +122,12 @@ class Control:
             self.mode = self.command[0]
             self.params = self.command[1:]
 
-    def define(self, mode, params=[]):
+    def define(self, mode, params=[], flags=[]):
         """Adds decorated func to self.modes"""
 
         def wrapper(func):
             if mode == None: self.auto_console = False
-            self.commands[mode] = {"func": func, "params": params}
+            self.commands[mode] = {"func": func, "params": params, "flags": flags + self.global_flags}
             return func
 
         return wrapper
@@ -136,9 +138,16 @@ class Control:
         if len(self.command) > 0:
             for mode in list(self.commands.keys()):
                 if mode == self.mode:
+                    flags_to_del = []
+                    for i in range(len(self.params)):
+                        if self.params[i] in self.commands[mode]["flags"]:
+                            self.flags.append(self.params[i])
+                            flags_to_del.append(i)
+                    for i in flags_to_del:
+                        del self.params[i]
                     if len(self.commands[mode]["params"]) != len(self.params):
                         word = "was"
-                        if len(self.params) > 1: word = "were"
+                        if len(self.params) != 1: word = "were"
                         print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
                         exit(1)
                     for param in zip(self.commands[mode]["params"], self.params):
@@ -163,12 +172,20 @@ class Control:
         self.command = input(self.prompt).split()
         self.mode = self.command[0]
         self.params = self.command[1:]
+        self.flags = []
 
         for mode in list(self.commands.keys()):
             if mode == self.mode:
+                flags_to_del = []
+                for i in range(len(self.params)):
+                    if self.params[i] in self.commands[mode]["flags"]:
+                        self.flags.append(self.params[i])
+                        flags_to_del.append(i)
+                for i in flags_to_del:
+                    del self.params[i]
                 if len(self.commands[mode]["params"]) != len(self.params):
                     word = "was"
-                    if len(self.params) > 1: word = "were"
+                    if len(self.params) != 1: word = "were"
                     print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
                     self.make_prompt()
                 for param in zip(self.commands[mode]["params"], self.params):
