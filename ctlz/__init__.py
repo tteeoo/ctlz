@@ -110,6 +110,7 @@ class Control:
 
         self.commands = {}
         self.name = name
+        self.auto_console = True
 
         if prompt != None: self.prompt = prompt
         else: self.prompt = name + "> "
@@ -123,6 +124,7 @@ class Control:
         """Adds decorated func to self.modes"""
 
         def wrapper(func):
+            if mode == None: self.auto_console = False
             self.commands[mode] = {"func": func, "params": params}
             return func
 
@@ -148,11 +150,13 @@ class Control:
             print(self.name + ": unknown command: " + self.mode)
             exit(1)
         else:
-            try:
-                self.make_prompt()
-            except (EOFError, KeyboardInterrupt):
-                exit(0)
-
+            if self.auto_console:
+                try:
+                    self.make_prompt()
+                except (EOFError, KeyboardInterrupt):
+                    exit(0)
+            else:
+                self.commands[None]["func"]()
 
     def make_prompt(self):
 

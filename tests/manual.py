@@ -6,7 +6,7 @@ app = ctlz.Control("calc")
 def add():
     print(int(app.params[0]) + int(app.params[1]))
 
-@app.define("foo")
+@app.define(None)
 def foobar():
     print("bar")
 
