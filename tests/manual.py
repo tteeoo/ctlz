@@ -1,4 +1,5 @@
 import ctlz
-
-config = ctlz.Config(["/home/theo/dev/repos/ctlz/tests/test.json"], "json")
-print(config.deserialize())
+mode = ctlz.Modes()
+@mode.define("foo")
+def bar():
+    print("foobar")

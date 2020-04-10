@@ -99,3 +99,19 @@ class Config:
         elif self.fmt == "ini":
             with open(path, "w") as f:
                 self.data.write(f)
+
+class Modes:
+    """Class for managing and executing decorated functions"""
+
+    def __init__(self):
+        """The constructor method"""
+
+        self.modes = {}
+
+    def define(self, mode):
+        """Adds decorated func to self.modes"""
+
+        def __wrapper(func):
+            self.modes[mode] = func
+            return func
+        return __wrapper
