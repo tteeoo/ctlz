@@ -18,6 +18,17 @@ TODO:
 #  Currently only deserializes from a list of paths
 class Config:
 
+    ## @var self.paths
+    #  List of paths to config file locations
+    ## @var self.fmt
+    #  Format of the config file
+    ## @var self.default
+    #  The default configuration
+    ## @var self.location
+    #  The location of the config file
+    ## @var self.data
+    #  The data of the configuration file
+
     def __validate_format(self, fmt):
         if fmt not in ["json", "ini"]:
             raise exceptions.InvalidConfigFormat("Invalid config file format, valid formats include 'json' and 'ini'")
@@ -26,6 +37,9 @@ class Config:
     ## The constructor method
     #
     #  Initializes properties from parameters
+    #  @param paths A list of paths to possible config files
+    #  @param fmt The format of the config file
+    #  @param default The default configuration
     def __init__(self, paths, fmt, default=None):
         self.paths = paths
         self.location = None

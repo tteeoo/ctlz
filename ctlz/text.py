@@ -46,6 +46,9 @@ def __get_code(color, mode="fg"):
 ## Function to easily color printed text
 #
 #  fg and bg kwargs can be set to any standard 4 bit terminal color, prefix with 'bright_' (as in 'bright_red') for the bright variant
+#  @param text The text to be modified
+#  @param fg The foreground color of the text
+#  @param bg The background color of the text
 def color(text, fg=None, bg=None):
 
     if fg == None and bg == None:
