@@ -1,4 +1,6 @@
 import os
+import re
+import sys
 import json
 import configparser
 
@@ -100,18 +102,57 @@ class Config:
             with open(path, "w") as f:
                 self.data.write(f)
 
-class Modes:
+class Control:
     """Class for managing and executing decorated functions"""
 
-    def __init__(self):
+    def __init__(self, prompt, invalid_command=None):
         """The constructor method"""
 
         self.modes = {}
+        self.prompt = prompt
+        self.invalid_command = invalid_command
+        self.args = sys.argv[1:]
 
     def define(self, mode):
         """Adds decorated func to self.modes"""
 
-        def __wrapper(func):
+        def wrapper(func):
             self.modes[mode] = func
             return func
-        return __wrapper
+        return wrapper
+
+    def run(self):
+        """Starts execution"""
+
+        if len(self.args) < 1:
+            try:
+                self.make_prompt()
+            except KeyboardInterrupt:
+                exit(0)
+        else:
+            for mode in list(self.modes.keys()):
+                if re.match(mode, " ".join(self.args)) != None:
+                    self.modes[mode]()
+                    exit(0)
+            if self.invalid_command != None:
+                print(self.invalid_command)
+                exit(1)
+            else:
+                raise ctlz.exceptions.InvalidCommand("No command " + " ".join(self.args))
+
+    def make_prompt(self):
+
+        match = False
+        self.args = input(self.prompt).split()
+        for mode in list(self.modes.keys()):
+            if re.match(mode, " ".join(self.args)) != None:
+                self.modes[mode]()
+                match = True
+
+        if not match:
+            if self.invalid_command != None:
+                print(self.invalid_command)
+            else:
+                raise ctlz.exceptions.InvalidCommand("No command " + " ".join(self.args))
+
+        self.make_prompt()
