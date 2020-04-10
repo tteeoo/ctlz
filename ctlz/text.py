@@ -46,8 +46,8 @@ def color(text, fg=None, bg=None):
     if fg == None and bg == None:
         return text
     elif fg == None:
-        return "\033[{}m".format(__get_code(bg, mode="bg")) + text
+        return "\033[{}m".format(__get_code(bg, mode="bg")) + text + "\033[0m"
     elif bg == None:
-        return "\033[{}m".format(__get_code(fg)) + text
+        return "\033[{}m".format(__get_code(fg)) + text + "\033[0m"
     else:
         return "\033[{};{}m".format(__get_code(fg), __get_code(bg, mode="bg")) + text + "\033[0m"
