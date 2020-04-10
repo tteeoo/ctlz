@@ -105,54 +105,73 @@ class Config:
 class Control:
     """Class for managing and executing decorated functions"""
 
-    def __init__(self, prompt, invalid_command=None):
+    def __init__(self, name, prompt=None, command=sys.argv[1:]):
         """The constructor method"""
 
-        self.modes = {}
-        self.prompt = prompt
-        self.invalid_command = invalid_command
-        self.args = sys.argv[1:]
+        self.commands = {}
+        self.name = name
 
-    def define(self, mode):
+        if prompt != None: self.prompt = prompt
+        else: self.prompt = name + "> "
+        
+        self.command = command
+        if command != []:
+            self.mode = self.command[0]
+            self.params = self.command[1:]
+
+    def define(self, mode, params=[]):
         """Adds decorated func to self.modes"""
 
         def wrapper(func):
-            self.modes[mode] = func
+            self.commands[mode] = {"func": func, "params": params}
             return func
+
         return wrapper
 
     def run(self):
         """Starts execution"""
 
-        if len(self.args) < 1:
+        if len(self.command) > 0:
+            for mode in list(self.commands.keys()):
+                if mode == self.mode:
+                    if len(self.commands[mode]["params"]) != len(self.params):
+                        word = "was"
+                        if len(self.params) > 1: word = "were"
+                        print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                        exit(1)
+                    for param in zip(self.commands[mode]["params"], self.params):
+                        if re.match(param[0], param[1]) == None:
+                            print(self.name + ": invalid param " + param[1] + " for " + self.mode)
+                            exit(1)
+                    self.commands[mode]["func"]()
+                    exit(0)
+            print(self.name + ": unknown command: " + self.mode)
+            exit(1)
+        else:
             try:
                 self.make_prompt()
-            except KeyboardInterrupt:
+            except (EOFError, KeyboardInterrupt):
                 exit(0)
-        else:
-            for mode in list(self.modes.keys()):
-                if re.match(mode, " ".join(self.args)) != None:
-                    self.modes[mode]()
-                    exit(0)
-            if self.invalid_command != None:
-                print(self.invalid_command)
-                exit(1)
-            else:
-                raise ctlz.exceptions.InvalidCommand("No command " + " ".join(self.args))
+
 
     def make_prompt(self):
 
-        match = False
-        self.args = input(self.prompt).split()
-        for mode in list(self.modes.keys()):
-            if re.match(mode, " ".join(self.args)) != None:
-                self.modes[mode]()
-                match = True
+        self.command = input(self.prompt).split()
+        self.mode = self.command[0]
+        self.params = self.command[1:]
 
-        if not match:
-            if self.invalid_command != None:
-                print(self.invalid_command)
-            else:
-                raise ctlz.exceptions.InvalidCommand("No command " + " ".join(self.args))
-
+        for mode in list(self.commands.keys()):
+            if mode == self.mode:
+                if len(self.commands[mode]["params"]) != len(self.params):
+                    word = "was"
+                    if len(self.params) > 1: word = "were"
+                    print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                    self.make_prompt()
+                for param in zip(self.commands[mode]["params"], self.params):
+                    if re.match(param[0], param[1]) == None:
+                        print(self.name + ": invalid param " + param[1] + " for " + self.mode)
+                        self.make_prompt()
+                self.commands[mode]["func"]()
+                self.make_prompt()
+        print(self.name + ": unknown command " + self.mode)
         self.make_prompt()

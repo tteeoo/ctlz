@@ -1,10 +1,13 @@
 import ctlz
 
-app = ctlz.Control("calc> ", invalid_command="bad command")
+app = ctlz.Control("calc")
 
-@app.define("add * *")
+@app.define("add", params=["[0-9]", "[0-9]"])
 def add():
-    print(app.args)
-    print(int(app.args[1]) + int(app.args[2]))
+    print(int(app.params[0]) + int(app.params[1]))
+
+@app.define("foo")
+def foobar():
+    print("bar")
 
 app.run()
