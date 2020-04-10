@@ -48,7 +48,7 @@ class Config:
             if os.path.isfile(path):
                 good_paths.append(path)
         if len(good_paths) < 1:
-            if self.default != None:
+            if self.default == None:
                 raise NoConfigFileFound("No file found or default provided")
             else:
                 return self.default
@@ -57,7 +57,7 @@ class Config:
 
         # json
         if self.fmt == "json":
-            if self.default != None:
+            if self.default == None:
                 try:
                     with open(self.location) as f:
                         self.data = json.load(f.read())
@@ -71,7 +71,7 @@ class Config:
 
         # ini
         elif self.fmt == "ini":
-            if self.default != None:
+            if self.default == None:
                 try:
                     self.data = configparser.ConfigParser()
                     self.data.read(self.location)

@@ -1,3 +1,4 @@
 import ctlz
 
-print(ctlz.text.color("hi", fg="red"))
+config = ctlz.Config(["/home/theo/dev/repos/ctlz/tests/test.json"], "json")
+print(config.deserialize())
