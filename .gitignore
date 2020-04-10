@@ -1,6 +1,3 @@
-# doxygen configuration file
-Doxyfile
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

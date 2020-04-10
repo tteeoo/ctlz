@@ -3,6 +3,7 @@ import json
 import ctlz.colors
 import ctlz.exceptions
 
+## Class for easy managment of configuration files
 class Config:
     def __init__(self, paths, fmt, default=None):
         self.paths = paths
@@ -10,6 +11,9 @@ class Config:
         self.default = default
         self.data = default
 
+    ## Reads the the first valid path in self.paths
+    #
+    # Currently only supports json configuration files
     def read(self):
         # check paths
         good_paths = []
