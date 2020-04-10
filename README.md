@@ -1,7 +1,7 @@
 # ctlz
 [![Documentation Status](https://readthedocs.org/projects/ctlz/badge/?version=latest)](https://ctlz.readthedocs.io/en/latest/?badge=latest)
 
-Easy and fast multi-purpose library for Python cli applications
+Making your quickly-made cli apps get made even quicker!
 
 ## Installation
 
