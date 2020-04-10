@@ -42,7 +42,7 @@ def __get_code(color, mode="fg"):
 def color(text, fg=None, bg=None):
     """Function to easily color printed text
 
-    fg and bg kwargs can be set to any standard 4 bit terminal color, prefix with 'bright_' (as in 'bright_red') for the bright variant"""
+    fg and bg kwargs can be set to any standard 4 bit terminal color, prefix with bright (as in 'bright_red') for the bright variant"""
     if fg == None and bg == None:
         return text
     elif fg == None:
