@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/tteeoo/ctlz",
     packages=find_packages(),
-    # install_requires=[""],
+    install_requires=["configparser"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

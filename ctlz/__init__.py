@@ -4,12 +4,13 @@
 
 import os
 import json
+import configparser
 import ctlz.text
 import ctlz.exceptions
 
 ## Class for easy management of configuration files
 #
-#  Currently only reads from a list of paths
+#  Currently only deserializes from a list of paths
 class Config:
 
     ## The constructor method
@@ -20,11 +21,12 @@ class Config:
         self.fmt = fmt
         self.default = default
         self.data = default
+        self.read_location = None
 
-    ## Reads config file at the first valid path in self.paths
+    ## Reads config file at the first valid path in self.paths and return it deserialized
     #
-    #  Currently only supports json config files
-    def read(self):
+    #  Currently only supports json and ini-style config files
+    def deserialize(self):
         good_paths = []
         for path in self.paths:
             if os.path.isfile(path):
@@ -34,20 +36,39 @@ class Config:
                 return self.default
             else:
                 raise exceptions.NoConfigFileFound("No file found or default provided")
+        else:
+            self.read_location = good_paths[0]
 
         # json
         if self.fmt == "json":
             if self.default != None:
                 try:
-                    with open(good_paths[0]) as f:
+                    with open(self.read_location) as f:
                         self.data = json.load(f.read())
-                        return self.data
+                    return self.data
                 except:
                     return self.default
             else:
-                with open(good_paths[0]) as f:
+                with open(self.read_location) as f:
                     self.data = json.load(f.read())
+                return self.data
+
+        # ini
+        elif self.fmt == "ini":
+            if self.default != None:
+                try:
+                    self.data = configparser.ConfigParser()
+                    self.data.read(self.read_location)
                     return self.data
+                except:
+                    return self.default
+            else:
+                self.data = configparser.ConfigParser()
+                self.data.read(self.read_location)
+                return self.data
+
+        else:
+            raise exceptions.InvalidConfigFormat("Invalid config file format, valid formats include 'json' and 'ini'")
 
         #TODO: add more config formats
 

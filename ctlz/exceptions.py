@@ -8,6 +8,10 @@
 class NoConfigFileFound(Exception):
     pass
 
-## Raised when an invalid color is provided in text.color
+## Raised when an invalid color is provided in text.color()
 class InvalidColor(Exception):
+    pass
+
+## Raised when an invalid config format is provided in Config.deserialize()
+class InvalidConfigFormat(Exception):
     pass
