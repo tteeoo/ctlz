@@ -45,13 +45,13 @@ class Config:
             if self.default == None:
                 try:
                     with open(self.location) as f:
-                        self.data = json.load(f.read())
+                        self.data = json.load(f)
                     return self.data
                 except:
                     return self.default
             else:
                 with open(self.location) as f:
-                    self.data = json.load(f.read())
+                    self.data = json.load(f)
                 return self.data
 
         # ini
@@ -82,12 +82,12 @@ class Config:
 
         # json
         if self.fmt == "json":
-            with open(self.location, "w") as f:
-                json.dump(self.data, f.write())
+            with open(self.location, "w+") as f:
+                json.dump(self.data, f)
 
         # ini
         elif self.fmt == "ini":
-            with open(self.location, "w") as f:
+            with open(self.location, "w+") as f:
                 self.data.write(f)
 
     def serialize(self):
@@ -97,12 +97,12 @@ class Config:
 
         # json
         if self.fmt == "json":
-            with open(self.location, "w") as f:
-                json.dump(self.data, f.write())
+            with open(self.location, "w+") as f:
+                json.dump(self.data, f)
 
         # ini
         elif self.fmt == "ini":
-            with open(self.location, "w") as f:
+            with open(self.location, "w+") as f:
                 self.data.write(f)
 
     def serialize_path(self, path):
@@ -110,12 +110,12 @@ class Config:
 
         # json
         if self.fmt == "json":
-            with open(path, "w") as f:
-                json.dump(self.data, f.write())
+            with open(path, "w+") as f:
+                json.dump(self.data, f)
 
         # ini
         elif self.fmt == "ini":
-            with open(path, "w") as f:
+            with open(path, "w+") as f:
                 self.data.write(f)
 
 class Control:
