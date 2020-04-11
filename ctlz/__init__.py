@@ -198,12 +198,21 @@ class Control:
                             flags_to_del.append(i)
                     for i in flags_to_del:
                         del self.params[i]
-                    if len(self.commands[mode]["params"]) != len(self.params):
-                        word = "was"
-                        if len(self.params) != 1: word = "were"
-                        print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
-                        exit(1)
+                    if None in self.commands[mode]["params"]:
+                        if len(self.commands[mode]["params"]) > len(self.params):
+                            word = "was"
+                            if len(self.params) != 1: word = "were"
+                            print(self.name + ": invalid amount of params; " + self.mode + " takes atleast " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                            exit(1)
+                    else:
+                        if len(self.commands[mode]["params"]) != len(self.params):
+                            word = "was"
+                            if len(self.params) != 1: word = "were"
+                            print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                            exit(1)
                     for param in zip(self.commands[mode]["params"], self.params):
+                        if param[0] == None:
+                            break
                         if re.match(param[0], param[1]) == None:
                             print(self.name + ": invalid param " + param[1] + " for " + self.mode)
                             exit(1)
@@ -237,12 +246,21 @@ class Control:
                         flags_to_del.append(i)
                 for i in flags_to_del:
                     del self.params[i]
-                if len(self.commands[mode]["params"]) != len(self.params):
-                    word = "was"
-                    if len(self.params) != 1: word = "were"
-                    print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
-                    self.make_prompt()
+                if None in self.commands[mode]["params"]:
+                    if len(self.commands[mode]["params"]) > len(self.params):
+                        word = "was"
+                        if len(self.params) != 1: word = "were"
+                        print(self.name + ": invalid amount of params; " + self.mode + " takes atleast " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                        self.make_prompt()
+                else:
+                    if len(self.commands[mode]["params"]) != len(self.params):
+                        word = "was"
+                        if len(self.params) != 1: word = "were"
+                        print(self.name + ": invalid amount of params; " + self.mode + " takes " + str(len(self.commands[mode]["params"])) + " but " + str(len(self.params)) + " " + word + " provided")
+                        self.make_prompt()
                 for param in zip(self.commands[mode]["params"], self.params):
+                    if param[0] == None:
+                        break
                     if re.match(param[0], param[1]) == None:
                         print(self.name + ": invalid param " + param[1] + " for " + self.mode)
                         self.make_prompt()
