@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import json
+import readline
 import configparser
 
 import ctlz.text
@@ -89,7 +90,22 @@ class Config:
             with open(self.location, "w") as f:
                 self.data.write(f)
 
-    def serialize(self, path):
+    def serialize(self):
+        """Writes config to the first path, without checking anything"""
+
+        self.location = self.paths[0]
+
+        # json
+        if self.fmt == "json":
+            with open(self.location, "w") as f:
+                json.dump(self.data, f.write())
+
+        # ini
+        elif self.fmt == "ini":
+            with open(self.location, "w") as f:
+                self.data.write(f)
+
+    def serialize_path(self, path):
         """Writes config to the specified path"""
 
         # json
@@ -161,19 +177,14 @@ class Control:
                         if [mode, info[mode]["doc"]] not in known: known.append([mode, info[mode]["doc"]])
                 if self.help_header != None: print(self.help_header)
                 print("USAGE: ")
-                print("\t" + self.name + " [MODE [FLAGS] <PARAMS>]\n")
+                print("\t" + self.name + " [<MODE> [FLAGS] <PARAMS>]\n")
                 print("MODES: ")
                 for mode in list(info.keys()):
                     if info[mode]["doc"] == None:
                         raise ctlz.exceptions.NoDocString("mode " + mode + " does not have a docstring to create help message from")
                     info[mode]["alias"].append(mode)
 
-                    list_params = ", takes no params"
-                    if len(self.commands[mode]["params"]) == 1:
-                        list_params = ", takes param: " + self.commands[mode]["params"][0]
-                    if len(self.commands[mode]["params"]) > 1:
-                        list_params = ", takes params: " + " ".join(self.commands[mode]["params"])
-                    print("\t" + ", ".join(info[mode]["alias"]) + ": " + info[mode]["doc"] + list_params + "\n")
+                    print("\t" + ", ".join(info[mode]["alias"]) + ": " + info[mode]["doc"] + "\n")
                 if self.auto_console: print("Run without any arguments to enter console mode.")
                 if self.extra_help != None: print(self.extra_help)
 
