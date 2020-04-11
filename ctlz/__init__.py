@@ -105,14 +105,17 @@ class Config:
 class Control:
     """Class for managing and executing decorated functions"""
 
-    def __init__(self, name, global_flags=[], prompt=None, command=sys.argv[1:]):
+    def __init__(self, name, global_flags=[], prompt=None, auto_help=False, help_header=None, extra_help=None, command=sys.argv[1:]):
         """The constructor method"""
 
         self.commands = {}
         self.global_flags = global_flags
         self.flags = []
         self.name = name
+        self.help_header = help_header
+        self.extra_help = extra_help
         self.auto_console = True
+        self.auto_help = auto_help
 
         if prompt != None: self.prompt = prompt
         else: self.prompt = name + "> "
@@ -134,6 +137,45 @@ class Control:
 
     def run(self):
         """Starts execution"""
+
+        if self.auto_help:
+            @self.define("-h")
+            @self.define("--help")
+            def help_message():
+                """Prints this help message"""
+
+                info = {}
+                for mode in list(self.commands.keys()):
+                    info[mode] = {"doc": self.commands[mode]["func"].__doc__, "alias": []}
+
+                known = []
+                for mode in list(info.keys()):
+                    found = False
+                    for pair in known:
+                        if info[mode]["doc"] == pair[1]:
+                            info[pair[0]]["alias"].append(mode)
+                            del info[mode]
+                            found = True
+                            break
+                    if not found:
+                        if [mode, info[mode]["doc"]] not in known: known.append([mode, info[mode]["doc"]])
+                if self.help_header != None: print(self.help_header)
+                print("USAGE: ")
+                print("\t" + self.name + " [MODE [FLAGS] <PARAMS>]\n")
+                print("MODES: ")
+                for mode in list(info.keys()):
+                    if info[mode]["doc"] == None:
+                        raise ctlz.exceptions.NoDocString("mode " + mode + " does not have a docstring to create help message from")
+                    info[mode]["alias"].append(mode)
+
+                    list_params = ", takes no params"
+                    if len(self.commands[mode]["params"]) == 1:
+                        list_params = ", takes param: " + self.commands[mode]["params"][0]
+                    if len(self.commands[mode]["params"]) > 1:
+                        list_params = ", takes params: " + " ".join(self.commands[mode]["params"])
+                    print("\t" + ", ".join(info[mode]["alias"]) + ": " + info[mode]["doc"] + list_params + "\n")
+                if self.auto_console: print("Run without any arguments to enter console mode.")
+                if self.extra_help != None: print(self.extra_help)
 
         if len(self.command) > 0:
             for mode in list(self.commands.keys()):
@@ -168,6 +210,7 @@ class Control:
                 self.commands[None]["func"]()
 
     def make_prompt(self):
+        """Makes program enter console mode"""
 
         self.command = input(self.prompt).split()
         self.mode = self.command[0]

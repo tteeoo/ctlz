@@ -7,5 +7,5 @@ class InvalidColor(Exception):
 class InvalidConfigFormat(Exception):
     """Raised when an invalid config format is provided in Config.deserialize()"""
 
-class InvalidCommand(Exception):
-    """Raised when an invalid command is ran and not invalid command message is provided"""
+class NoDocString(Exception):
+    """Raised when auto_help is true, but a mode doesn't have a docstring"""
